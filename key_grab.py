@@ -21,8 +21,14 @@ def OnKeyboardEvent(event):
         screen=np.array(ImageGrab.grab(bbox=(0,30,1280,750)))
         gray_image=imageprocessing.convert_to_gray(screen)
         ceva=imageprocessing.get_subimage(gray_image,settings.speed_restriction_ROI)
-        cv2.imwrite(os.getcwd()+"/speedlimits/"+str(random.randint(0,100))+".jpg",ceva)
+        cv2.imwrite(os.getcwd()+"/speedlimit/"+str(random.randint(0,100))+".jpg",ceva)
         print('image grabed')
+    
+    if event.Ascii==ord('j'):
+        Global.acceleration+=5
+
+    if event.Ascii==ord('n'):
+        Global.acceleration-=5
 
     if event.Ascii in wasd and Global.autopilot:
         Global.autopilot=False

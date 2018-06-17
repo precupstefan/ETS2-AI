@@ -1,5 +1,6 @@
 import cv2
 import os
+import time
 import numpy as np
 import imageprocessing
 from PIL import Image
@@ -34,7 +35,7 @@ def train_speedlimit():
     for filename in os.listdir(os.getcwd()+"/speedlimits"):
         image=cv2.imread(os.getcwd()+"/speedlimits/"+filename,cv2.IMREAD_GRAYSCALE)
         img.append(image)
-        labels.append( int(filename.rsplit( ".", 1 )[ 0 ] ))
+        labels.append( int(filename.rsplit( " ", 1 )[ 0 ] ))
     speedRecognizer.train(img, np.array(labels))
     print('Training speedlimiter was succesful')
     speedRecognizer.write('speedlimits.spd')
@@ -57,6 +58,34 @@ def load_speedlimit():
     print('You are crusing at {}'.format(value))
     return  """
 
-def test():
-    print('You are crusing at {} in a {} limit zone'.format(Global.speed_current,Global.speed_limit))
+def display_speed_info():
+    print('You are crusing at {} in a {} limit zone. Acceleration at {}'.format(Global.speed_current,Global.speed_limit,Global.acceleration))
     return 
+
+def brake():
+    print('braking')
+    return
+
+def calculate_acceleration():
+    if Global.speed_current<Global.speed_limit+3:
+        difference=Global.speed_limit-Global.speed_current+3
+        if difference>10:
+            Global.acceleration=100
+            Global.last_acceleration_time=-1
+        else:
+            Global.acceleration=0.6016*Global.speed_current + 12.80
+            Global.last_acceleration_time=-1
+        print('Accelerating to {}'.format(Global.acceleration))
+    else:
+        if Global.last_acceleration_time==-1:
+            Global.last_acceleration_time=time.time()
+            Global.acceleration-=5
+        else:
+            if time.time()-Global.last_acceleration_time>3:
+                brake()
+            else:
+                Global.acceleration-=10
+                if Global.acceleration<0:
+                    Global.acceleration=0
+        print('Decelerating to {}'.format(Global.acceleration))
+    return

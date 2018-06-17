@@ -19,19 +19,27 @@ import settings
 import threading
 import imageprocessing
 import speedinfo
+import Global
 
+def display_image(image):
 
+    cv2.rectangle(image,(settings.speed_current_ROI[2],settings.speed_current_ROI[0]),(settings.speed_current_ROI[3],settings.speed_current_ROI[1]),(0,255,0),2)
+    cv2.rectangle(image,(settings.speed_restriction_ROI[2],settings.speed_restriction_ROI[0]),(settings.speed_restriction_ROI[3],settings.speed_restriction_ROI[1]),(0,255,0),2)
 
+    cv2.imshow('ETS2_AI',cv2.cvtColor(image,cv2.COLOR_BGR2RGB))
+#   Place Image at desired location. Delete this line if no location is desired
+    cv2.moveWindow('ETS2_AI',1281,0)
+    return
 def press_buttons():
-    
-    controller.set_axis(pyvjoy.HID_USAGE_SL1,0x8000)
+    speedinfo.calculate_acceleration()
+    controller.set_axis(pyvjoy.HID_USAGE_SL1,int(327.68*Global.acceleration))
 # else:
-    controller.set_axis(pyvjoy.HID_USAGE_SL1,0x0)
+   # controller.set_axis(pyvjoy.HID_USAGE_SL1,0x0)
       
     return 
 #
 #   CAPTURE THE GAME GAME WINDOW
-#   GAME MUST BE TOP LEFT CORNER
+#   GAME MUST BE TOP LEFT CORNERq
 #   REZOLUTION 1280x720
 #
 
@@ -58,13 +66,11 @@ def main():
             #speedinfo.adjust_speed(gray_image,settings.speed_current_ROI,speedrecognizer)
             imageprocessing.detect_speed(gray_image,settings.speed_current_ROI)
             imageprocessing.detect_speed_limit(gray_image,settings.speed_restriction_ROI)
-            speedinfo.test()
+            speedinfo.display_speed_info()
             last_time_speedcheck=time.time()
         
-        #cv2.imshow('ETS2_AI',imageprocessing.get_subimage(gray_image,settings.speed_current_ROI))
-        cv2.imshow('ETS2_AI',cv2.cvtColor(screen,cv2.COLOR_BGR2RGB))
-    #   Place Image at desired location. Delete this line if no location is desired
-        cv2.moveWindow('ETS2_AI',1281,0)
+        display_image(screen)
+        press_buttons()
         
         
         if cv2.waitKey(25) & 0XFF ==ord('q'):
