@@ -6,7 +6,6 @@ Created on Sat Jun 16 19:17:14 2018
 
 install vJoy from http://vjoystick.sourceforge.net/
 Install pyvjoy from https://github.com/tidzo/pyvjoy
-install tesseract from https://github.com/UB-Mannheim/tesseract/wiki
 """
 
 import numpy as np
@@ -38,7 +37,7 @@ def press_buttons():
 
 def main():
     #load speeds
-    speedrecognizer=speedinfo.train()
+    speedrecognizer=speedinfo.load()
 
     # initialize keygrabing
     key_thread= threading.Thread(target=key_grab.init)
@@ -57,7 +56,7 @@ def main():
         cv2.imshow('ETS2_AI',cv2.cvtColor(screen,cv2.COLOR_BGR2RGB))
     #   Place Image at desired location. Delete this line if no location is desired
         cv2.moveWindow('ETS2_AI',1281,0)
-
+        
         if cv2.waitKey(25) & 0XFF ==ord('q'):
             cv2.destroyAllWindows()
             break
