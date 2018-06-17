@@ -2,17 +2,35 @@ import settings
 import pyHook
 import pyvjoy
 import pythoncom
+import Global
 
+import numpy as np
+from PIL import ImageGrab
+import imageprocessing
+import cv2
+import random
+import os
+
+wasd=[ord('w'),ord('a'),ord('s'),ord('d'),
+ord('W'),ord('A'),ord('S'),ord('D')]
 
 #   KEYPRESSED EVENT
 def OnKeyboardEvent(event):
     # block only the letter A, lower and uppercase
-   
-    if event.Ascii == ord(settings.autopilot_hotkey):
-        settings.controller.set_axis(pyvjoy.HID_USAGE_SL1,0x8000)
-        print(event.Ascii)
-    else:
-        settings.controller.set_axis(pyvjoy.HID_USAGE_SL1,0x0)
+    if event.Ascii== ord('`'):
+        screen=np.array(ImageGrab.grab(bbox=(0,30,1280,750)))
+        gray_image=imageprocessing.convert_to_gray(screen)
+        ceva=imageprocessing.get_subimage(gray_image,settings.speed_restriction_ROI)
+        cv2.imwrite(os.getcwd()+"/speedlimits/"+str(random.randint(0,100))+".jpg",ceva)
+        print('image grabed')
+
+    if event.Ascii in wasd and Global.autopilot:
+        Global.autopilot=False
+        print('AutoPilot disengaging')
+
+    if event.Ascii == ord(settings.autopilot_hotkey) and not Global.autopilot:
+        Global.autopilot=True
+        print('AutoPilot engaging')
     # returning True to pass on event to other applications
     return True
 
