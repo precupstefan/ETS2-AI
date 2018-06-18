@@ -17,13 +17,22 @@ ord('W'),ord('A'),ord('S'),ord('D')]
 #   KEYPRESSED EVENT
 def OnKeyboardEvent(event):
     # block only the letter A, lower and uppercase
+
+    #delete only after u have all speed limits
     if event.Ascii== ord('`'):
         screen=np.array(ImageGrab.grab(bbox=(0,30,1280,750)))
         gray_image=imageprocessing.convert_to_gray(screen)
         ceva=imageprocessing.get_subimage(gray_image,settings.speed_restriction_ROI)
-        cv2.imwrite(os.getcwd()+"/speedlimit/"+str(random.randint(0,100))+".jpg",ceva)
+        cv2.imwrite(os.getcwd()+"/speedlimit/"+str(random.randint(500,1000))+".jpg",ceva)
         print('image grabed')
     
+    #delete after u have all speed limits
+    if event.Ascii== ord('='):
+        if Global.picture:
+            Global.picture=False
+        else:
+            Global.picture=True
+
     if event.Ascii==ord('j'):
         Global.acceleration+=5
 

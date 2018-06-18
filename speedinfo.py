@@ -13,7 +13,7 @@ def train():
     for filename in os.listdir(os.getcwd()+"/speeds"):
         image=cv2.imread(os.getcwd()+"/speeds/"+filename,cv2.IMREAD_GRAYSCALE)
         img.append(image)
-        labels.append( int(filename.rsplit( ".", 1 )[ 0 ] ))
+        labels.append( int(filename.rsplit( " ", 1 )[ 0 ] ))
     speedRecognizer.train(img, np.array(labels))
     print('Training was succesful')
     speedRecognizer.write('speeds.spd')
@@ -28,6 +28,8 @@ def load():
     else:
         Global.speed_recognizer= train()
     return
+
+
 def train_speedlimit():
     img=[]
     labels=[]
@@ -61,7 +63,7 @@ def load_speedlimit():
 def display_speed_info():
     print('You are crusing at {} in a {} limit zone. Acceleration at {}'.format(Global.speed_current,Global.speed_limit,Global.acceleration))
     return 
-
+"""
 def brake():
     print('braking')
     return
@@ -75,7 +77,7 @@ def calculate_acceleration():
         else:
             Global.acceleration=0.6016*Global.speed_current + 12.80
             Global.last_acceleration_time=-1
-        print('Accelerating to {}'.format(Global.acceleration))
+        
     else:
         if Global.last_acceleration_time==-1:
             Global.last_acceleration_time=time.time()
@@ -87,5 +89,5 @@ def calculate_acceleration():
                 Global.acceleration-=10
                 if Global.acceleration<0:
                     Global.acceleration=0
-        print('Decelerating to {}'.format(Global.acceleration))
-    return
+       
+    return"""

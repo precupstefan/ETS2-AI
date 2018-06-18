@@ -20,6 +20,8 @@ import threading
 import imageprocessing
 import speedinfo
 import Global
+import os
+import random
 
 def display_image(image):
 
@@ -31,7 +33,7 @@ def display_image(image):
     cv2.moveWindow('ETS2_AI',1281,0)
     return
 def press_buttons():
-    speedinfo.calculate_acceleration()
+    #speedinfo.calculate_acceleration()
     controller.set_axis(pyvjoy.HID_USAGE_SL1,int(327.68*Global.acceleration))
 # else:
    # controller.set_axis(pyvjoy.HID_USAGE_SL1,0x0)
@@ -43,6 +45,11 @@ def press_buttons():
 #   REZOLUTION 1280x720
 #
 
+def saveimg(gray_image):
+    ceva=imageprocessing.get_subimage(gray_image,settings.speed_current_ROI)
+    cv2.imwrite(os.getcwd()+"/speedlimit/"+str(random.randint(0,10000))+".jpg",ceva)
+    return
+    
 def main():
     #load speeds
     speedinfo.load()
@@ -52,8 +59,11 @@ def main():
     key_thread.daemon=True
     key_thread.start()
 
+    Global.speed_recognizer=speedinfo.train()
 
     last_time_speedcheck=time.time()
+
+    i=500
 
     while(True):
 
@@ -61,16 +71,24 @@ def main():
         screen=np.array(ImageGrab.grab(bbox=(0,30,1280,750)))
 
         gray_image=imageprocessing.convert_to_gray(screen)
-
+        
         if time.time()-last_time_speedcheck>settings.speed_check_interval :
             #speedinfo.adjust_speed(gray_image,settings.speed_current_ROI,speedrecognizer)
             imageprocessing.detect_speed(gray_image,settings.speed_current_ROI)
             imageprocessing.detect_speed_limit(gray_image,settings.speed_restriction_ROI)
-            speedinfo.display_speed_info()
             last_time_speedcheck=time.time()
         
         display_image(screen)
+        speedinfo.display_speed_info()
         press_buttons()
+
+
+        ##delete after u have pictures of every speed x10
+        if Global.picture:
+            ceva=imageprocessing.get_subimage(gray_image,settings.speed_current_ROI)
+            cv2.imwrite(os.getcwd()+"/speedlimit/"+str(i)+".jpg",ceva)
+            print('image grabed')
+            i+=1
         
         
         if cv2.waitKey(25) & 0XFF ==ord('q'):
