@@ -27,5 +27,6 @@ def detect_speed_limit(img,region):
     img=get_subimage(img,region)
     value, value1= Global.speed_limit_recognizer.predict(img)
     Global.speed_limit=value
+    return
 
 

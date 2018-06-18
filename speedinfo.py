@@ -60,10 +60,8 @@ def load_speedlimit():
     print('You are crusing at {}'.format(value))
     return  """
 
-def display_speed_info():
-    print('You are crusing at {} in a {} limit zone. Acceleration at {}'.format(Global.speed_current,Global.speed_limit,Global.acceleration))
-    return 
-"""
+
+
 def brake():
     print('braking')
     return
@@ -90,4 +88,4 @@ def calculate_acceleration():
                 if Global.acceleration<0:
                     Global.acceleration=0
        
-    return"""
+    return

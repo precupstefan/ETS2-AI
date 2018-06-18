@@ -14,6 +14,8 @@ import os
 wasd=[ord('w'),ord('a'),ord('s'),ord('d'),
 ord('W'),ord('A'),ord('S'),ord('D')]
 
+ws=[ord('w'),ord('W'),ord('s'),ord('S')]
+
 #   KEYPRESSED EVENT
 def OnKeyboardEvent(event):
     # block only the letter A, lower and uppercase
@@ -39,13 +41,16 @@ def OnKeyboardEvent(event):
     if event.Ascii==ord('n'):
         Global.acceleration-=5
 
-    if event.Ascii in wasd and Global.autopilot:
+    if event.Ascii in ws and Global.autopilot:
         Global.autopilot=False
         print('AutoPilot disengaging')
 
     if event.Ascii == ord(settings.autopilot_hotkey) and not Global.autopilot:
         Global.autopilot=True
         print('AutoPilot engaging')
+    elif event.Ascii == ord(settings.autopilot_hotkey) and  Global.autopilot:
+        Global.autopilot=False
+        print('AutoPilot disengaging')
     # returning True to pass on event to other applications
     return True
 

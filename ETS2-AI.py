@@ -32,12 +32,14 @@ def display_image(image):
 #   Place Image at desired location. Delete this line if no location is desired
     cv2.moveWindow('ETS2_AI',1281,0)
     return
-def press_buttons():
-    #speedinfo.calculate_acceleration()
+
+def reset_controls():
+    controller.set_axis(pyvjoy.HID_USAGE_SL1,0)
+    return
+
+def manage_speed():
+    speedinfo.calculate_acceleration()
     controller.set_axis(pyvjoy.HID_USAGE_SL1,int(327.68*Global.acceleration))
-# else:
-   # controller.set_axis(pyvjoy.HID_USAGE_SL1,0x0)
-      
     return 
 #
 #   CAPTURE THE GAME GAME WINDOW
@@ -45,24 +47,23 @@ def press_buttons():
 #   REZOLUTION 1280x720
 #
 
-def saveimg(gray_image):
-    ceva=imageprocessing.get_subimage(gray_image,settings.speed_current_ROI)
-    cv2.imwrite(os.getcwd()+"/speedlimit/"+str(random.randint(0,10000))+".jpg",ceva)
-    return
-    
+def display_info():
+    print('Autopilot: {} .You are crusing at {} in a {} limit zone. Acceleration at {}'.format(Global.autopilot,Global.speed_current,Global.speed_limit,Global.acceleration))
+    return 
+
 def main():
     #load speeds
     speedinfo.load()
     speedinfo.load_speedlimit()
+
     # initialize keygrabing
     key_thread= threading.Thread(target=key_grab.init)
     key_thread.daemon=True
     key_thread.start()
 
-    Global.speed_recognizer=speedinfo.train()
-
     last_time_speedcheck=time.time()
 
+    #delete after having all speed pictures
     i=500
 
     while(True):
@@ -78,9 +79,16 @@ def main():
             imageprocessing.detect_speed_limit(gray_image,settings.speed_restriction_ROI)
             last_time_speedcheck=time.time()
         
+
+        if Global.autopilot:
+            manage_speed()
+        else:
+            reset_controls()
+
+
         display_image(screen)
-        speedinfo.display_speed_info()
-        press_buttons()
+        display_info()
+        
 
 
         ##delete after u have pictures of every speed x10
