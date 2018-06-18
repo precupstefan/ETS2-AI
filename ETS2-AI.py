@@ -35,11 +35,17 @@ def display_image(image):
 
 def reset_controls():
     controller.set_axis(pyvjoy.HID_USAGE_SL1,0)
+    controller.set_axis(pyvjoy.HID_USAGE_SL0,0)
     return
 
 def manage_speed():
     speedinfo.calculate_acceleration()
+
+    #accelerationAxis
     controller.set_axis(pyvjoy.HID_USAGE_SL1,int(327.68*Global.acceleration))
+
+    #brakingAxis
+    controller.set_axis(pyvjoy.HID_USAGE_SL0,int(3276*2*Global.brakes))
     return 
 #
 #   CAPTURE THE GAME GAME WINDOW
@@ -48,7 +54,7 @@ def manage_speed():
 #
 
 def display_info():
-    print('Autopilot: {} .You are crusing at {} in a {} limit zone. Acceleration at {}'.format(Global.autopilot,Global.speed_current,Global.speed_limit,Global.acceleration))
+    print('Autopilot: {} . Speed: {}  Limit: {} . Acceleration: {} Braking:  {}'.format(Global.autopilot,Global.speed_current,Global.speed_limit,int(Global.acceleration),Global.brakes))
     return 
 
 def main():

@@ -12,6 +12,7 @@ speed_limit_recognizer=-1
 
 
 #truck acceleration
+brakes=0
 acceleration=0
 last_acceleration_time=0
 

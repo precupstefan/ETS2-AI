@@ -67,25 +67,34 @@ def brake():
     return
 
 def calculate_acceleration():
-    if Global.speed_current<Global.speed_limit+3:
-        difference=Global.speed_limit-Global.speed_current+3
-        if difference>10:
+
+    difference=Global.speed_current-Global.speed_limit-3
+    print('diferenta'+str(difference))
+    if difference<0:
+        
+        if difference<-10:
             Global.acceleration=100
             Global.last_acceleration_time=-1
+            Global.brakes=0
         else:
             Global.acceleration=0.6016*Global.speed_current + 12.80
             Global.last_acceleration_time=-1
+            Global.brakes=0
         
     else:
-        if Global.last_acceleration_time==-1:
+        if difference<10:
             Global.last_acceleration_time=time.time()
             Global.acceleration-=5
         else:
-            if time.time()-Global.last_acceleration_time>3:
-                brake()
+            if Global.last_acceleration_time==-1:
+                Global.last_acceleration_time=time.time()
+                Global.acceleration-=5
             else:
-                Global.acceleration-=10
-                if Global.acceleration<0:
-                    Global.acceleration=0
-       
+                if time.time()-Global.last_acceleration_time>3:
+                    Global.brakes=2
+                else:
+                    Global.acceleration-=10
+    if Global.acceleration<0:
+        Global.acceleration=0
+
     return
